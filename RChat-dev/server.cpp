@@ -14,6 +14,7 @@
 #include "Epoll.h"
 #include "InetAddress.h"
 #include "utils.h"
+#include "Channel.h"
 
 constexpr int MAX_CONN = 1024, BUF_SIZE = 1024;
 // 一个客户端的标识：{sockfd, 用户名}
@@ -38,19 +39,20 @@ int main() {
         auto evs = ep->poll();
         int nfds = evs.size();
         for (int i = 0; i < nfds; ++i) {
-            int fd = evs[i].data.fd;
+            int fd = evs[i]->get_fd();
             // 监听的 socket 收到消息，表明有客户端进行连接了。
             if (fd == server_socket->get_fd()) {
                 InetAddress* client_addr = new InetAddress();
                 Socket* client_socket = new Socket(server_socket->accept(client_addr));
                 client_socket->set_reuseaddr();
-
                 printf("new client connected! fd: %d, IP: %s, Port: %d\n", 
                         client_socket->get_fd(), inet_ntoa(client_addr->addr.sin_addr), ntohs(client_addr->addr.sin_port));
 
-                ep->add_fd(client_socket->get_fd(), EPOLLIN); // 向内核事件表中添加客户端连接socket
+                Channel *client_channel = new Channel(ep, client_socket->get_fd());
+                client_channel->enable_reading();
+
                 clients[client_socket->get_fd()] = {client_socket->get_fd(), ""};
-            } else if (evs[i].events & EPOLLIN) {        
+            } else if (evs[i]->get_revents() & EPOLLIN) {        
                 // 客户端有消息，则代表客户端发送了消息过来，保存并发给其他客户端。
                 char buffer[BUF_SIZE];
                 int read_bytes = read(fd, buffer, sizeof buffer);
