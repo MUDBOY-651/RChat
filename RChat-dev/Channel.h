@@ -3,7 +3,7 @@
 
 class Epoll;
 class Channel {
-private:
+private :
     Epoll *ep;  // 指向被分配到的 Epoll 对象
     int fd;
     uint32_t events;    // 希望监听哪些事件

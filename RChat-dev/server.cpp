@@ -32,7 +32,9 @@ int main() {
     // 保存客户端信息
     std::map<int, Client> clients;
     Epoll* ep = new Epoll();
-    ep->add_fd(server_socket->get_fd(), EPOLLIN);
+    // ep->add_fd(server_socket->get_fd(), EPOLLIN);
+    Channel *server_channel = new Channel(ep, server_socket->get_fd());
+    server_channel->enable_reading();
 
     printf("Waiting for connection...\n");
     while (true) {
@@ -44,7 +46,6 @@ int main() {
             if (fd == server_socket->get_fd()) {
                 InetAddress* client_addr = new InetAddress();
                 Socket* client_socket = new Socket(server_socket->accept(client_addr));
-                client_socket->set_reuseaddr();
                 printf("new client connected! fd: %d, IP: %s, Port: %d\n", 
                         client_socket->get_fd(), inet_ntoa(client_addr->addr.sin_addr), ntohs(client_addr->addr.sin_port));
 

@@ -1,5 +1,6 @@
 #include "Channel.h"
 #include "Epoll.h"
+#include <cstdio>
 
 Channel::Channel(Epoll* _ep, int _fd) : ep(_ep), fd(_fd), events(0), revents(0), in_epoll(false) {
 }
@@ -19,6 +20,7 @@ int Channel::get_fd() {
 }
 
 uint32_t Channel::get_events() {
+    
     return events;
 }
 
@@ -35,5 +37,7 @@ void Channel::set_in_epoll() {
 }
 
 void Channel::set_revents(uint32_t _rev) {
+    puts("start setting");
     revents = _rev;
+    puts("set revents success");
 }

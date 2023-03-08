@@ -14,14 +14,14 @@ constexpr int BUF_SIZE = 1024;
 
 void* send_msg(void* arg) {
     int sockfd = *((int*)arg);
-    char msg[BUF_SIZE];
+    std::string msg;
     while (true) {
-        scanf("%s", msg);
-        if (!strcmp(msg, "QUIT") || !strcmp(msg, "quit")) {
+        getline(std::cin, msg);
+        if (msg == "QUIT" || msg == "quit") {
             close(sockfd);
             exit(0);
         }
-        send(sockfd, msg, sizeof(msg), 0);
+        send(sockfd, msg.c_str(), (int)msg.size(), 0);
     }
 }
 
@@ -51,9 +51,8 @@ int main() {
     sockaddr_in serv_addr;
     bzero(&serv_addr, sizeof serv_addr);
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(6183);
-    serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    // serv_addr.sin_addr.s_addr = inet_addr("172.23.125.118");
+    serv_addr.sin_port = htons(3389);
+    serv_addr.sin_addr.s_addr = inet_addr("120.24.49.67");
 
     printf("Connecting...\n");
     

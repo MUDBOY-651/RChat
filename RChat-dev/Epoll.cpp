@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <vector>
+#include <cstdio>
 
 #define MAX_EVENTS 1024
 
@@ -36,16 +37,16 @@ void Epoll::del_fd(int fd) {
 }
 
 std::vector<Channel*> Epoll::poll(int timeout) {
-    std::vector<Channel*> activeEvent;
+    std::vector<Channel*> active_channels;
     int nfds = epoll_wait(epfd, events, MAX_EVENTS, timeout);
     errif(nfds == -1, "epoll wait error");
     for (int i = 0; i < nfds; ++i) {
-        Channel* ch = (Channel*)events[i].data.ptr;
+        Channel* ch = (Channel*)events[i].data.ptr; 
         ch->set_revents(events[i].events);
-        activeEvent.push_back(ch);
+        active_channels.push_back(ch);
         // activeEvent.push_back(events[i]);
     }
-    return activeEvent;
+    return active_channels;
 }
 
 // 更新 Channel 类，添加事件到内核事件表。
