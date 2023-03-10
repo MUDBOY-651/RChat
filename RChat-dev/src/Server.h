@@ -1,13 +1,15 @@
 #pragma once
 #include <map>
 
-class EventLoop;
 class Socket;
+class EventLoop;
 struct Client;
+class Acceptor;
 
 class Server {
 private:
     EventLoop* loop;
+    Acceptor *acceptor;
     std::map<int, Client> clients;
 public:
     Server(EventLoop*);

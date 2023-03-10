@@ -3,6 +3,7 @@
 #include "InetAddress.h"
 #include "Channel.h"
 #include "utils.h"
+#include "Acceptor.h"
 #include <functional>
 #include <cstring>
 #include <unistd.h>
@@ -11,18 +12,13 @@
 constexpr int READ_BUFFER = 1024;
 
 Server::Server(EventLoop* _loop) : loop(_loop) {
-    Socket *server_socket = new Socket();
-    InetAddress *server_address = new InetAddress(3389);
-    server_socket->bind(server_address);
-    server_socket->listen();
-
-    Channel *server_channel = new Channel(loop, server_socket->get_fd());
-    std::function<void()> cb = std::bind(&Server::new_connection, this, server_socket);
-    server_channel->set_callback(cb);
-    server_channel->enable_reading();
+    acceptor = new Acceptor(loop);
+    std::function<void(Socket*)> cb = std::bind(&Server::new_connection, this, std::placeholders::_1);
+    acceptor->set_new_connection_callback(cb);
 }
 
 Server::~Server() {
+    delete acceptor;
 }
 
 void Server::handle_read_event(int fd) {
@@ -51,6 +47,7 @@ void Server::handle_read_event(int fd) {
     }
 }
 
+// 创建客户端连接 socket -> accept() -> 添加到内核进行监听 。
 void Server::new_connection(Socket *server_socket) {
     InetAddress *client_addr = new InetAddress();   // 内存泄露
     Socket *client_socket = new Socket(server_socket->accept(client_addr));     // 内存泄露
