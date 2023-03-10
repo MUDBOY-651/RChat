@@ -1,12 +1,16 @@
 #include "Channel.h"
 #include "EventLoop.h"
 #include <cstdio>
+#include <unistd.h>
 
 Channel::Channel(EventLoop* _loop, int _fd) : loop(_loop), fd(_fd), events(0), revents(0), in_epoll(false) {
 }
 
 Channel::~Channel() {
-    delete loop;
+    if (fd != -1) {
+        close(fd);
+        fd = -1;
+    }
 }
 
 // 监控可读，并且添加到内核事件表。

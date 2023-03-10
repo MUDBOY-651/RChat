@@ -12,7 +12,7 @@ EventLoop::~EventLoop() {
 }
 
 void EventLoop::loop() {
-    printf("Waiting for connection...");
+    printf("Waiting for connection...\n");
     while (!quit) {
         std::vector<Channel*> chs;
         chs = ep->poll();

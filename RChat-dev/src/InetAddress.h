@@ -1,5 +1,6 @@
 #pragma once
 #include <arpa/inet.h>
+#define PORT_NUM 3389
 
 class InetAddress {
 public:
