@@ -50,8 +50,17 @@ utils.h
 ### bug 修正
 在向内核事件表中加入 监听socket 事件的代码中未创建 `server_channel`，导致其为未定义，访问对应的内存区域产生了 `Segmentation Fault` 报错。
 
+## version 0.2.1
+> 2022.3.10
 
+服务器与事件驱动核心类登场
 
+服务器改造成 Reactor 模式。首先我们将整个服务器抽象成一个 Server 类，
+这个类中有一个 main-Reactor（在这个版本没有 sub-Reactor ），里面的核心是一个 EventLoop（libevent 中叫做 EventBase ），
+这是一个事件循环，我们添加需要监听的事务到这个事件循环内，每次有事件发生时就会通知（在程序中返回给我们 Channel ），
+然后根据不同的描述符、事件类型进行处理（以回调函数的方式）。
+
+*tips:如果文字看不懂，可以尝试跟着完成代码，会从中理解不少*
 
 
 

@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
-#include "utils.h"
+#include "src/utils.h"
 
 constexpr int BUF_SIZE = 1024;
 

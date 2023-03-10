@@ -1,28 +1,15 @@
 // linux 服务端
-#include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <sys/epoll.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <cstdlib>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <map>
-#include <string>
-#include "Socket.h"
-#include "Epoll.h"
-#include "InetAddress.h"
-#include "utils.h"
-#include "Channel.h"
+#include "src/Server.h"
+#include "src/EventLoop.h"
 
-constexpr int MAX_CONN = 1024, BUF_SIZE = 1024;
-// 一个客户端的标识：{sockfd, 用户名}
-struct Client {
-    int sockfd;
-    std::string name;
-};
+int main() {
+    EventLoop *loop = new EventLoop();
+    Server *server = new Server(loop);
+    loop->loop();
+    return 0;
+}
 
+/*
 int main() {
     Socket *server_socket = new Socket();
     InetAddress *server_address = new InetAddress(3389);
@@ -87,3 +74,4 @@ int main() {
     delete server_socket;
     return 0;
 }
+*/

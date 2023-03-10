@@ -1,18 +1,18 @@
 #include "Channel.h"
-#include "Epoll.h"
+#include "EventLoop.h"
 #include <cstdio>
 
-Channel::Channel(Epoll* _ep, int _fd) : ep(_ep), fd(_fd), events(0), revents(0), in_epoll(false) {
+Channel::Channel(EventLoop* _loop, int _fd) : loop(_loop), fd(_fd), events(0), revents(0), in_epoll(false) {
 }
 
 Channel::~Channel() {
-    ep = nullptr;
+    delete loop;
 }
 
 // 监控可读，并且添加到内核事件表。
 void Channel::enable_reading() {
     events = EPOLLIN;
-    ep->updateChannel(this);
+    loop->update_channel(this);
 }
 
 int Channel::get_fd() {
@@ -37,7 +37,13 @@ void Channel::set_in_epoll() {
 }
 
 void Channel::set_revents(uint32_t _rev) {
-    puts("start setting");
     revents = _rev;
-    puts("set revents success");
+}
+
+void Channel::handle_event() {
+    callback();
+}
+
+void Channel::set_callback(std::function<void()> _cb) {
+    callback = _cb;
 }

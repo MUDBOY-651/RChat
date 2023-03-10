@@ -30,11 +30,6 @@ void Epoll::add_fd(int fd, uint32_t op) {
     ev.events = op;
     errif(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1, "epoll add event error");
 }
-//  delete epfd and close socket
-void Epoll::del_fd(int fd) {
-    close(fd);
-    errif(epoll_ctl(epfd, EPOLL_CTL_DEL, fd, 0) == -1, "epoll delete event error");
-}
 
 std::vector<Channel*> Epoll::poll(int timeout) {
     std::vector<Channel*> active_channels;
@@ -50,7 +45,7 @@ std::vector<Channel*> Epoll::poll(int timeout) {
 }
 
 // 更新 Channel 类，添加事件到内核事件表。
-void Epoll::updateChannel(Channel* ch) {
+void Epoll::update_channel(Channel* ch) {
     int fd = ch->get_fd();
     struct epoll_event ev;
     bzero(&ev, sizeof(ev));
