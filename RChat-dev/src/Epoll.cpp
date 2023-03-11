@@ -23,14 +23,6 @@ Epoll::~Epoll() {
     delete [] events;
 }
 
-void Epoll::add_fd(int fd, uint32_t op) {
-    struct epoll_event ev;
-    bzero(&ev, sizeof(ev));
-    ev.data.fd = fd;
-    ev.events = op;
-    errif(epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev) == -1, "epoll add event error");
-}
-
 std::vector<Channel*> Epoll::poll(int timeout) {
     std::vector<Channel*> active_channels;
     int nfds = epoll_wait(epfd, events, MAX_EVENTS, timeout);
