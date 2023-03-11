@@ -3,6 +3,7 @@
 #include "Server.h"
 #include "Channel.h"
 #include "EventLoop.h"
+#include "Buffer.h"
 #include <functional>
 #include <unistd.h>
 #include <map>
@@ -14,6 +15,7 @@ Connection::Connection(EventLoop* _loop, Socket* _socket, std::map<int, Client>&
     std::function<void()> cb = std::bind(&Connection::handle_readevent, this, socket->get_fd());
     channel->set_callback(cb);
     channel->enable_reading();
+    read_buffer = new Buffer();
 }
 
 Connection::~Connection() {
@@ -30,19 +32,20 @@ void Connection::handle_readevent(int fd) {
     } else if (read_bytes == 0) {   // client disconnected
         printf("EOF, client_sockfd: %d disconnected!\n", fd);
         delete_connection_callback(socket);
-    } else {
-        std::string msg(buffer, read_bytes);
+    } else if (read_bytes > 0) {
+        read_buffer->append(buffer, read_bytes);
         if (client_map[fd].name == "") {       // msg is username if its username is empty
-            client_map[fd].name = msg;
+            client_map[fd].name = read_buffer->c_str();
         } else {        // otherwise, it's a chat msg.
+            std::string msg_write = "[" + client_map[fd].name + "]: " + read_buffer->get_buf();
             for (auto &[client_sockfd, client]: client_map) {
                 if (client_sockfd == fd) {        // send msg to everyone except itself
                     continue;
                 }
-                std::string msg_write = "[" + client_map[fd].name + "]: " + msg;
                 write(client_sockfd, msg_write.c_str(), msg_write.size());
             }
         }
+        read_buffer->clear();
     }
 }
 

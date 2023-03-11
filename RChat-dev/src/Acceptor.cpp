@@ -8,6 +8,7 @@
 Acceptor::Acceptor(EventLoop* _loop): loop(_loop) {
     socket = new Socket();
     addr = new InetAddress(PORT_NUM);
+    socket->set_reuseaddr();
     socket->bind(addr);
     socket->listen();
     accpet_channel = new Channel(loop, socket->get_fd());

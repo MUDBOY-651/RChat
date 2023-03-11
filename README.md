@@ -69,17 +69,25 @@ utils.h
 
 ### bug修正
 问题：
-- 加入完 Connection 类以后，出现了后一个连接（客户端）收不到前一个连接发送的消息，debug 发现，通过引用 map 在 `std::function` 中传递不具有时效性，
+1. 维持多个客户端连接时，结束其中一个客户端连接，服务器异常终止运行，与其他客户端连接断开。
+2. 加入完 Connection 类以后，出现了后一个连接（客户端）收不到前一个连接发送的消息，debug 发现，通过引用 map 在 `std::function` 中传递不具有时效性，
 即前一个连接回调函数 `handle_readevent()` 中的参数是旧版本的 map，因此在前一个连接的函数中循环 `map<int, Client> clients` 不会找到新连接的 键值，
 因此后者无法接受前者消息。
 
 解决方法:
-- 在 Connection 类中加入绑定 `std::map<int, Client>` 类型引用的数据成员以共享此数据结构。
+1. 在执行 `~Channel()` 时，不应加入 `delete loop` 使得事件驱动异常终止。
+2. 在 Connection 类中加入绑定 `std::map<int, Client>` 类型引用的数据成员以共享此数据结构。
 
 总结：
+- 加强对整体框架的认识，各个类之间的联系。
 - 对于 `std::function` 的原理掌握需要加强，其参数不具有时效性。
 - 共享某个数据结构，可以通过其他类中存储这个数据结构的指针（引用）来实现，而不是通过 std::function 中的参数来传递。
 
+
+## version 0.2.3 
+> 2022.3.11
+
+加入 Buffer 类，设置 socket `SO_REUSEADDR`
 
 
 
