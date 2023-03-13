@@ -23,4 +23,5 @@ public:
 
     void handle_readevent(int fd);
     void set_delete_connection_callback(std::function<void(Socket*)> _cb);
+    void send(int sockfd);
 };

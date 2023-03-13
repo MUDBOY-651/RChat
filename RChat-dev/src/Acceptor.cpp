@@ -7,13 +7,13 @@
 // 构造 Acceptor 实例
 Acceptor::Acceptor(EventLoop* _loop): loop(_loop) {
     socket = new Socket();
-    addr = new InetAddress(PORT_NUM);
+    InetAddress* addr = new InetAddress(PORT_NUM);
     socket->set_reuseaddr();
     socket->bind(addr);
     socket->listen();
     accpet_channel = new Channel(loop, socket->get_fd());
     std::function<void()> cb = std::bind(&Acceptor::accept_connection, this);
-    accpet_channel->set_callback(cb);
+    accpet_channel->set_read_callback(cb);
     accpet_channel->enable_reading();
     delete addr;
 }

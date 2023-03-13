@@ -13,4 +13,5 @@ public:
     void clear();
     void getline();
     std::string get_buf();
+    void set_buf(const char* _buf);
 };

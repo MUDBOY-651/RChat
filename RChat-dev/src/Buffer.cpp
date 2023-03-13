@@ -36,3 +36,7 @@ std::string Buffer::get_buf() {
     return buf;
 }
 
+void Buffer::set_buf(const char* _buf) {
+    buf.clear();
+    buf.append(_buf);
+}

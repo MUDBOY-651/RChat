@@ -1,8 +1,21 @@
-# server:
-#	g++ server.cpp src/Connection.cpp src/Acceptor.cpp src/Server.cpp src/EventLoop.cpp src/utils.cpp src/Epoll.cpp src/Socket.cpp src/InetAddress.cpp src/Channel.cpp -std=c++17 -D DBG -o server
+src=$(wildcard src/*.cpp)
+
 server:
-	g++ server.cpp src/*.cpp -std=c++17 -lpthread -D DBG -o server
+	g++ -std=c++17 -pthread -g \
+	$(src) \
+	server.cpp \
+	-o server
+	
 client:
-	g++ client.cpp src/utils.cpp -std=c++17 -D DBG -lpthread -o client
+	g++ src/util.cpp src/Buffer.cpp src/Socket.cpp src/InetAddress.cpp client.cpp -std=c++17 -o client
+
+# th:
+#	g++ -pthread src/ThreadPool.cpp ThreadPoolTest.cpp -o ThreadPoolTest
+
+test:
+	g++ src/util.cpp src/Buffer.cpp src/Socket.cpp src/InetAddress.cpp src/ThreadPool.cpp \
+	-pthread -std=c++17 \
+	test.cpp -o test
+
 clean:
-	rm server && rm client
+	rm server && rm client && rm test

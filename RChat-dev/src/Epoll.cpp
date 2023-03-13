@@ -54,3 +54,8 @@ void Epoll::update_channel(Channel* ch) {
 int Epoll::get_fd() {
     return epfd;
 }
+
+void Epoll::delete_channel(Channel *channel) {
+    errif(epoll_ctl(epfd, EPOLL_CTL_DEL, channel->get_fd(), NULL) == -1, "epoll delete error");
+    channel->set_in_epoll(false);
+}

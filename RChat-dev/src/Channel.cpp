@@ -36,8 +36,8 @@ bool Channel::get_in_epoll() {
     return in_epoll;
 }
 
-void Channel::set_in_epoll() {
-    in_epoll = true;
+void Channel::set_in_epoll(bool in) {
+    in_epoll = in;
 }
 
 void Channel::set_revents(uint32_t _rev) {
@@ -45,9 +45,14 @@ void Channel::set_revents(uint32_t _rev) {
 }
 
 void Channel::handle_event() {
-    callback();
+    // callback();
+    loop->add_thread(callback);
 }
 
-void Channel::set_callback(std::function<void()> _cb) {
-    callback = _cb;
+void Channel::set_read_callback(std::function<void()> _cb) {
+    read_callback = _cb;
+}
+
+void Channel::set_use_threadPool(bool use) {
+    use_threadPool = use;
 }

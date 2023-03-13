@@ -28,16 +28,6 @@ void Server::new_connection(Socket *socket) {
     conn->set_delete_connection_callback(cb);
     connections[socket->get_fd()] = conn;
     clients[socket->get_fd()] = {socket->get_fd(), ""};
-
-    // InetAddress *client_addr = new InetAddress();   // 内存泄露
-    // Socket *client_socket = new Socket(server_socket->accept(client_addr));     // 内存泄露
-    // printf("new client connected! fd: %d, IP: %s, Port: %d\n", 
-    //     client_socket->get_fd(), inet_ntoa(client_addr->addr.sin_addr), ntohs(client_addr->addr.sin_port));
-    // Channel *client_channel = new Channel(loop, client_socket->get_fd());
-    // std::function<void()> cb = std::bind(&Server::handle_read_event, this, client_socket->get_fd());
-    // client_channel->set_callback(cb);
-    // client_channel->enable_reading();
-    // clients[client_channel->get_fd()] = {client_channel->get_fd(), ""};
 }
 
 void Server::delete_connection(Socket *socket) {

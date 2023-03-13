@@ -1,4 +1,5 @@
 #include "ThreadPool.h"
+#include <future>
 
 ThreadPool::ThreadPool(int size) : stop(false) {
     for (int i = 0; i < size; ++i) {
@@ -14,20 +15,25 @@ ThreadPool::ThreadPool(int size) : stop(false) {
                     if (stop && tasks.empty())  // 线程池停止了线程池不为空直接退出线程。
                         return ;
                     task = tasks.front();
-                    task();
+                    tasks.pop();
                 }
+                task();
             }
         }));
     }
 }
 
-void ThreadPool::add(std::function<void()> func) {
+ThreadPool::~ThreadPool() {
     {
         std::unique_lock<std::mutex> lock(tasks_mtx);
-        if (stop) {
-            throw std::runtime_error("ThreadPool already stop, can't add task any more!");
-        }
-        tasks.emplace(func);
+        stop = true;
     }
-    cv.notify_one();
+    cv.notify_all();
+    for (std::thread &th: threads) {
+        if (th.joinable()) {
+            th.join();
+        }
+    }
 }
+
+
