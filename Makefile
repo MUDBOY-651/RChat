@@ -7,7 +7,7 @@ server:
 	-o server
 	
 client:
-	g++ src/util.cpp src/Buffer.cpp src/Socket.cpp src/InetAddress.cpp client.cpp -std=c++17 -o client
+	g++ src/utils.cpp src/Buffer.cpp src/Socket.cpp src/InetAddress.cpp client.cpp -std=c++17 -pthread -o client
 
 # th:
 #	g++ -pthread src/ThreadPool.cpp ThreadPoolTest.cpp -o ThreadPoolTest

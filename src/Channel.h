@@ -11,7 +11,6 @@ private :
     uint32_t revents;   // 在epoll返回该Channel时文件描述符正在发生的事件
     bool in_epoll;  // 当前 Channel 是否在 epoll 红黑树中。（使用 EPOLL_CTL_ADD or EPOLL_CTL_MOD)
     bool use_threadPool;    // 是否使用线程池
-    std::function<void()> callback;
     std::function<void()> read_callback;
     std::function<void()> write_callback;
 public:

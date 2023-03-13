@@ -44,9 +44,28 @@ void Channel::set_revents(uint32_t _rev) {
     revents = _rev;
 }
 
+// 回调read(EPOLLIN, EPOLLPRI), 回调write(EPOLLOUT)
 void Channel::handle_event() {
     // callback();
-    loop->add_thread(callback);
+    if (revents & (EPOLLIN | EPOLLPRI)) {
+        if (use_threadPool) {
+            loop->add_thread(read_callback);
+        } else {
+            read_callback();
+        }
+    }
+    if (revents & (EPOLLOUT)) {
+        if (use_threadPool) {
+            loop->add_thread(write_callback);
+        } else {
+            write_callback();
+        }
+    }
+}
+
+void Channel::use_ET() {
+    events |= EPOLLET;
+    loop->update_channel(this);
 }
 
 void Channel::set_read_callback(std::function<void()> _cb) {
