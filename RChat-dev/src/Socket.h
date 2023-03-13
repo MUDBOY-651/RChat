@@ -13,5 +13,6 @@ public:
     void set_nonblocking();  // 设置非阻塞 socket
     void set_reuseaddr();
     int accept(InetAddress*);
+    void connect(InetAddress*);
     int get_fd();
 };

@@ -32,6 +32,7 @@ void Socket::set_nonblocking() {
     fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | O_NONBLOCK);
 }
 
+
 void Socket::set_reuseaddr() {
     int opt = 1;
     int ret = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(int));
@@ -45,6 +46,11 @@ int Socket::accept(InetAddress *addr) {
     int client_sockfd = ::accept(fd, (sockaddr*)&addr->addr, &addr->addr_len);
     errif(client_sockfd == -1, "socket accpet error");
     return client_sockfd;
+}
+
+void Socket::connect(InetAddress *addr_) {
+    struct sockaddr_in addr = addr_->addr;
+    errif(::connect(fd, (sockaddr*)&addr, addr_->addr_len) == -1, "connect error");
 }
 
 int Socket::get_fd() {
