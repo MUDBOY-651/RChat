@@ -42,14 +42,15 @@ void Connection::handle_readevent(int fd) {
     delete_connection_callback(socket);
   } else if (read_bytes > 0) {
     read_buffer->append(buffer, read_bytes);
-    if (client_map[fd].name ==
-        "") {  // msg is username if its username is empty
+    // msg is username if its username is empty
+    if (client_map[fd].name == "") {
       client_map[fd].name = read_buffer->c_str();
     } else {  // otherwise, it's a chat msg.
       std::string msg_write =
           "[" + client_map[fd].name + "]: " + read_buffer->get_buf();
       for (auto& [client_sockfd, client] : client_map) {
-        if (client_sockfd == fd) {  // send msg to everyone except itself
+        // send msg to everyone except itself
+        if (client_sockfd == fd) {
           continue;
         }
         write(client_sockfd, msg_write.c_str(), msg_write.size());

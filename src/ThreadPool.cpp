@@ -10,10 +10,8 @@ ThreadPool::ThreadPool(int size) : stop(false) {
         {
           // 该作用域内上锁，离开作用域自动解锁不需要unlock
           std::unique_lock<std::mutex> lock(tasks_mtx);
-          cv.wait(lock, [this]() {
-            return stop ||
-                   !tasks.empty();  // 线程池停止或者队列不为空进入临界区
-          });
+          // 线程池停止或者队列不为空进入临界区
+          cv.wait(lock, [this]() { return stop || !tasks.empty(); });
           if (stop && tasks.empty())  // 线程池停止了线程池不为空直接退出线程。
             return;
           task = tasks.front();

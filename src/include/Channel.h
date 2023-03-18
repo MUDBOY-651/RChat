@@ -31,5 +31,4 @@ class Channel {
 
   void set_revents(uint32_t);
   void set_read_callback(std::function<void()>);
-  void set_use_threadPool(bool use = true);
 };

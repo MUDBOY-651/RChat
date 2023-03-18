@@ -1,6 +1,6 @@
 // linux 服务端
-#include "include/Server.h"
-#include "include/EventLoop.h"
+#include "../src/include/Server.h"
+#include "../src/include/EventLoop.h"
 
 int main() {
   EventLoop *loop = new EventLoop();
