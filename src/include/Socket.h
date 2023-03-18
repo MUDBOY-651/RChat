@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Macros.h"
 class InetAddress;
 class Socket {
  private:
@@ -9,6 +9,7 @@ class Socket {
   Socket();
   Socket(int);
   ~Socket();
+  DISALLOW_COPY_AND_MOVE(Socket);
   void bind(InetAddress*);
   void listen();
   void set_nonblocking();  // 设置非阻塞 socket

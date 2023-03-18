@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include <vector>
+#include "Macros.h"
 
 class Socket;
 class EventLoop;
@@ -21,6 +22,7 @@ class Server {
  public:
   Server(EventLoop *);
   ~Server();
+  DISALLOW_COPY_AND_MOVE(Server);
   void handle_read_event(int sockfd);
   void new_connection(Socket *server_socket);
   void delete_connection(Socket *server_socket);

@@ -1,5 +1,6 @@
 #pragma once
 #include <arpa/inet.h>
+#include "Macros.h"
 #define PORT_NUM 3389
 
 class InetAddress {
@@ -11,4 +12,5 @@ class InetAddress {
   // address to accpet any incoming messages.
   InetAddress(uint16_t port);
   ~InetAddress();
+  DISALLOW_COPY_AND_MOVE(InetAddress);
 };

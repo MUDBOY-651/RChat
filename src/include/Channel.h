@@ -1,5 +1,6 @@
 #pragma once
 #include <sys/epoll.h>
+#include "Macros.h"
 
 #include <functional>
 
@@ -19,6 +20,7 @@ class Channel {
  public:
   Channel(EventLoop* _loop, int _fd);
   ~Channel();
+  DISALLOW_COPY_AND_MOVE(Channel);
   void handle_event();
   void enable_reading();
 

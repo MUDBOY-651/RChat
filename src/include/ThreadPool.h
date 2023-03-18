@@ -1,4 +1,5 @@
 #pragma once
+#include "Macros.h"
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -18,6 +19,7 @@ class ThreadPool {
  public:
   ThreadPool(int size = std::thread::hardware_concurrency());
   ~ThreadPool();
+  DISALLOW_COPY_AND_MOVE(ThreadPool);
   template <class F, class... Args>
   auto add(F&& f, Args&&... args)
       -> std::future<typename std::result_of<F(Args...)>::type>;
