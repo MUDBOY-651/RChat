@@ -1,4 +1,4 @@
-src=$(wildcard src/*.cpp)
+src=$(wildcard ../src/*.cpp)
 
 server:
 	g++ -std=c++17 -pthread -g \
@@ -13,7 +13,7 @@ client:
 #	g++ -pthread src/ThreadPool.cpp ThreadPoolTest.cpp -o ThreadPoolTest
 
 test:
-	g++ src/util.cpp src/Buffer.cpp src/Socket.cpp src/InetAddress.cpp src/ThreadPool.cpp \
+	g++ ../src/utils.cpp ../src/Buffer.cpp ../src/Socket.cpp ../src/InetAddress.cpp ../src/ThreadPool.cpp \
 	-pthread -std=c++17 \
 	test.cpp -o test
 

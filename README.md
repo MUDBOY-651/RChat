@@ -50,7 +50,7 @@ utils.h
 ### bug 修正
 在向内核事件表中加入 监听socket 事件的代码中未创建 `server_channel`，导致其为未定义，访问对应的内存区域产生了 `Segmentation Fault` 报错。
 
-## version 0.2.1
+## version 0.2.0
 > 2022.3.10
 
 服务器与事件驱动核心类登场
@@ -62,7 +62,7 @@ utils.h
 
 *tips:如果文字看不懂，可以尝试跟着完成代码，会从中理解不少*
 
-## version 0.2.2 
+## version 0.2.1
 > 2022.3.10
 
 加入 Acceptor, Connection 类，TCP连接亦模块化，Reactor 模式逐渐成型
@@ -84,12 +84,22 @@ utils.h
 - 共享某个数据结构，可以通过其他类中存储这个数据结构的指针（引用）来实现，而不是通过 std::function 中的参数来传递。
 
 
-## version 0.2.3 
+## version 0.2.2
 > 2022.3.11
 
 加入 Buffer 类，设置 socket `SO_REUSEADDR`
 
+## version 0.3.0
+> 2022.3.13
 
+加入线程池，添加线程支持任何函数作为线程函数。
+
+### bug修正
+问题：
+- 客户端连接服务器之后，显示正常连接，服务器在 `Acceptor::accpet_connection()` 中 `socket->accept()` 之后的语句没有打印出来。客户端之间的消息也不能相互接收。
+
+解决方法：
+- 通过 `tcpdump port 端口号` 抓包发现服务器与客户端的确正常连接并且数据可以正常收发（没看服务器能不能将消息转发给客户端）但可以确定连接这块没有问题，猜测有可能是 Channel 或者 Connection 上出了问题。排查了一下bug发现是 Channel 的 `handle_event()` 函数调用的回调函数是空 `修改了一下回调的逻辑但是没有更换具体的回调函数`，导致
 
 
 
